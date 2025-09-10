@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio | Yash Kanzariya</title>
+
+  <link rel="icon" type="image/png" href="IMAGES/sailogo.png">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
+
+  <style>
+    /* Reset & base */
+    :root{
+      --bg:#0f1724;
+      --card:#0f1724; /* we will layer canvas, so set background similar */
+      --accent:#00d0ff;
+      --muted:#9aa4b2;
+      --glass: rgba(255,255,255,0.04);
+      --glass-2: rgba(255,255,255,0.03);
+      --radius:14px;
+      --maxw:1100px;
+      --container-pad:24px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color:#e6eef6;
+      background: linear-gradient(180deg, rgba(7,10,14,0.85), rgba(5,7,10,0.85));
+      min-height:100vh;
+      line-height:1.45;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      position:relative;
+      overflow-x:hidden;
+    }
+
+    /* background canvas covers full screen */
+    #matrixCanvas{
+      position:fixed;
+      top:0;left:0;
+      width:100vw;height:100vh;
+      z-index:0;
+      display:block;
+      background: radial-gradient(circle at 10% 10%, rgba(0,0,0,0.2), transparent 10%),
+                  linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.55));
+    }
+
+    /* Page container */
+    .page{
+      position:relative;
+      z-index:2;
+      max-width:var(--maxw);
+      margin:48px auto;
+      padding:var(--container-pad);
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:28px;
+      align-items:start;
+    }
+
+    /* header / nav */
+    .header{
+      grid-column:1 / -1;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:8px;
+    }
+    .logo{
+      color:var(--accent);
+      font-weight:700;
+      text-decoration:none;
+      letter-spacing:0.6px;
+      font-size:18px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    /* nav */
+    .navbar{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .navbar a{
+      color:#cfe9f6;
+      text-decoration:none;
+      padding:8px 12px;
+      border-radius:8px;
+      font-weight:500;
+      transition:background .18s, transform .12s;
+      font-size:15px;
+      opacity:0.95;
+    }
+    .navbar a.active,
+    .navbar a:hover{ background:var(--glass); transform:translateY(-1px) }
+
+    /* hamburger for mobile */
+    .nav-toggle{
+      display:none;
+      background:transparent;
+      border:0;
+      color:var(--accent);
+      font-size:22px;
+    }
+
+    /* left content */
+    .home-content{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:var(--radius);
+      padding:26px;
+      box-shadow: 0 6px 30px rgba(1,10,20,0.6);
+      backdrop-filter: blur(6px);
+      min-height:320px;
+    }
+    .home-content h3{ color:var(--muted); font-weight:600; margin-bottom:8px }
+    .home-content h1{ font-size:34px; margin-bottom:8px; color:#fff }
+    .home-content h3 span.pro-text{ color:var(--accent); font-weight:700 }
+
+    .home-content p{ color:#c4d6e6; margin-top:14px; font-size:15px }
+
+    .home-sci{ margin-top:18px; display:flex; gap:14px; align-items:center }
+    .home-sci a{
+      display:inline-flex; align-items:center; justify-content:center;
+      width:42px;height:42px;border-radius:10px;
+      text-decoration:none;color:#fff;background:var(--glass-2);
+      transition:transform .12s, background .14s;
+    }
+    .home-sci a:hover{ transform:translateY(-4px); background:rgba(0,0,0,0.25) }
+
+    .btn-box{
+      display:inline-block;
+      margin-top:16px;
+      padding:10px 14px;
+      border-radius:10px;
+      text-decoration:none;
+      color:#0b1220;
+      background:linear-gradient(90deg,var(--accent),#00ffa3);
+      font-weight:700;
+      box-shadow:0 6px 20px rgba(0,208,255,0.08);
+    }
+
+    /* right column (image) */
+    .home-img{
+      justify-self:center;
+      align-self:start;
+    }
+    .glowing-circle{
+      width:360px; max-width:100%;
+      height:360px; max-height:100%;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      position:relative;
+      background: radial-gradient(circle at 30% 20%, rgba(0,208,255,0.06), transparent 20% );
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+      padding:18px;
+    }
+    .glowing-circle .image{
+      width:220px;height:220px;border-radius:18px;overflow:hidden;
+      display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:18px;
+    }
+    .glowing-circle img{ width:100%; height:100%; object-fit:cover; display:block }
+
+    /* Featured projects grid (stacked under left content on small screens) */
+    .projects{
+      grid-column:1 / -1;
+      margin-top:18px;
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:14px;
+    }
+    .project-card{
+      background:rgba(255,255,255,0.02);
+      border-radius:12px;padding:14px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    }
+    .project-card h3{ margin-bottom:6px; font-size:16px }
+    .project-card p{ color:#bcd2e6; font-size:14px }
+
+    footer{
+      grid-column:1 / -1;
+      margin-top:18px;
+      text-align:center;color:#8fa6bb;font-size:13px;
+    }
+
+    /* Responsive breakpoints */
+    @media (max-width:980px){
+      .page{ grid-template-columns: 1fr 320px; gap:20px; padding:20px }
+      .glowing-circle{ width:300px;height:300px }
+      .home-content h1{ font-size:30px }
+    }
+
+    @media (max-width:800px){
+      .page{ grid-template-columns:1fr; margin:18px auto; padding:16px }
+      .header{ align-items:flex-start; gap:8px }
+      .navbar{ display:none; } /* hide regular nav on mobile */
+      .nav-toggle{ display:inline-flex; }
+      .home-img{ order: -1; display:flex; justify-content:center; margin-bottom:14px }
+      .glowing-circle{ width:240px;height:240px }
+      .home-content{ padding:18px }
+      .projects{ grid-template-columns:1fr; margin-top:12px }
+      .btn-box{ display:inline-block }
+    }
+
+    /* small touches */
+    a{ color:inherit }
+    .hidden{ display:none !important }
+  </style>
+</head>
+<body>
+  <!-- background canvas - keep your matrix script working, this canvas sits behind the UI -->
+  <canvas id="matrixCanvas"></canvas>
+
+  <div class="page">
+    <header class="header">
+      <a class="logo" href="#"><i class='bx bxs-terminal' style="color:var(--accent)"></i> Yash Kanzariya</a>
+
+      <nav class="navbar" id="mainNav">
+        <a href="#home" style="--i:1;" class="active">Home</a>
+        <a href="#about" style="--i:2;">About</a>
+        <a href="#skill" style="--i:3;">Skills</a>
+        <a href="#project" style="--i:4;">Projects</a>
+        <a href="#contact" style="--i:5;">Contact</a>
+      </nav>
+
+      <!-- mobile toggle -->
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <i class='bx bx-menu'></i>
+      </button>
+    </header>
+
+    <section id="home" class="home-content" aria-labelledby="home-heading">
+      <h3 id="home-heading">Hello, It's me</h3>
+      <h1>Yash Kanzariya</h1>
+      <h3>And I'm a <span class="pro-text"></span></h3>
+
+      <p>
+        This portfolio highlights my passion for cybersecurity and my commitment to ethical practices.
+        I focus on Threat Intelligence, SOC Automation, Cloud Security, and automation-driven penetration testing.
+      </p>
+
+      <div class="home-sci" aria-label="social links">
+        <a href="https://github.com/lmyash27" target="_blank" rel="noopener"><i class='bx bxl-github' style="font-size:20px"></i></a>
+        <a href="https://www.linkedin.com/in/yash-kanzariya" target="_blank" rel="noopener"><i class='bx bxl-linkedin' style="font-size:20px"></i></a>
+        <a href="mailto:your.email@example.com"><i class='bx bx-envelope' style="font-size:20px"></i></a>
+      </div>
+
+      <!-- Download CV link - ensure the file Yash_Kanzariya_CV.pdf is in repo root -->
+      <a href="Yash_Kanzariya_CV.pdf" class="btn-box" download="Yash_Kanzariya_CV">Download CV</a>
+
+      <!-- small featured projects preview -->
+      <div class="projects" style="margin-top:18px">
+        <div class="project-card">
+          <h3><a href="https://github.com/lmyash27/SOC-Automation" target="_blank">SOC-Automation</a></h3>
+          <p>Wazuh detections, playbooks & automation for triage and response.</p>
+        </div>
+        <div class="project-card">
+          <h3><a href="https://github.com/lmyash27/MISP-Docker" target="_blank">MISP-Docker</a></h3>
+          <p>Dockerized MISP with automation for ingestion and enrichment.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- profile image column -->
+    <aside class="home-img" aria-hidden="false">
+      <div class="glowing-circle">
+        <div class="image">
+          <!-- put profile image in IMAGES/profile.png or update path -->
+          <img src="IMAGES/saianon.png" alt="Yash Kanzariya">
+        </div>
+      </div>
+    </aside>
+
+    <footer>
+      Built with ❤️ • Hosted on GitHub Pages
+    </footer>
+  </div>
+
+  <!-- Typed.js init (keeps same settings) -->
+  <script>
+    new Typed(".pro-text", {
+      strings: ["Cybersecurity Analyst", "Security Researcher", "Ethical Hacker"],
+      typeSpeed: 80,
+      backSpeed: 60,
+      backDelay: 1000,
+      loop: true
+    });
+  </script>
+
+  <!-- small JS: mobile nav toggle + make canvas full window -->
+  <script>
+    (function(){
+      const toggle = document.getElementById('navToggle');
+      const nav = document.getElementById('mainNav');
+      toggle.addEventListener('click', () => {
+        if(nav.style.display === 'flex') {
+          nav.style.display = 'none';
+          toggle.innerHTML = "<i class='bx bx-menu'></i>";
+        } else {
+          nav.style.display = 'flex';
+          nav.style.flexDirection = 'column';
+          nav.style.background = 'rgba(255,255,255,0.02)';
+          nav.style.position = 'absolute';
+          nav.style.right = '16px';
+          nav.style.top = '64px';
+          nav.style.padding = '12px';
+          nav.style.borderRadius = '10px';
+          toggle.innerHTML = "<i class='bx bx-x'></i>";
+        }
+      });
+
+      // Ensure correct nav state on resize
+      window.addEventListener('resize', () => {
+        if(window.innerWidth > 800) {
+          nav.style.display = '';
+          nav.style.position = '';
+          nav.style.right = '';
+          nav.style.top = '';
+          nav.style.padding = '';
+          nav.style.flexDirection = '';
+        } else {
+          nav.style.display = 'none';
+          toggle.innerHTML = "<i class='bx bx-menu'></i>";
+        }
+      });
+
+      // Matrix canvas sizing - keep if you have matrix.js, otherwise canvas remains
+      const canvas = document.getElementById('matrixCanvas');
+      function fitCanvas(){
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      fitCanvas();
+      window.addEventListener('resize', fitCanvas);
+    })();
+  </script>
+
+  <!-- matrix.js: keep your custom script at JAVASCRIPT/matrix.js
+       If you don't have one, the canvas will be blank but page still works. -->
+  <script src="JAVASCRIPT/matrix.js"></script>
+</body>
+</html>
