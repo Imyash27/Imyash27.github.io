@@ -61,7 +61,6 @@
     .name{
       font-size:44px;line-height:1; margin-bottom:8px;color:var(--cyan);
       text-shadow: var(--shadow);
-      transform-style:preserve-3d; /* helps parallax */
     }
     .role{font-size:20px;color:var(--green);font-weight:700;margin-bottom:12px}
     .desc{color:#9defdc;max-width:68ch;font-size:15px;margin-bottom:14px}
@@ -78,13 +77,11 @@
     .profile-wrap{width:300px;height:300px;border-radius:50%;display:grid;place-items:center;
       background: radial-gradient(circle at 30% 20%, rgba(0,234,255,0.04), transparent 30% );
       box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 8px 30px rgba(0,255,159,0.06);
-      transform-style:preserve-3d; transition:transform .15s ease-out;
       border: 2px solid rgba(0,255,159,0.06);
     }
     .profile{
       width:220px;height:220px;border-radius:50%;overflow:hidden;border:3px solid rgba(0,234,255,0.12);
       box-shadow: 0 18px 40px rgba(0,0,0,0.6), var(--shadow);
-      transition: transform .12s ease-out, filter .12s; transform-style:preserve-3d;
     }
     .profile img{width:100%;height:100%;object-fit:cover;display:block}
 
@@ -147,7 +144,7 @@
 
   <!-- Header -->
   <header>
-    <div class="logo">[ Yash::Portfolio ]</div>
+    <div class="logo">Yash Kanzariya</div>
     <nav>
       <a href="#home">Home</a>
       <a href="#projects">Projects</a>
@@ -163,7 +160,7 @@
         <div class="greeting">Hello, I am</div>
         <div class="name glitch" id="nameEl" data-text="Yash Kanzariya">Yash Kanzariya</div>
         <div class="role">And I'm a <span id="typedRole" class="role-text"></span></div>
-        <p class="desc">Cybersecurity Analyst · Ethical Hacker · Security Researcher. Focused on SOC automation, Threat Intelligence, cloud hardening and AI-assisted pentesting.</p>
+        <p class="desc">Cybersecurity Analyst · Ethical Hacker · Security Researcher. Focused on SOC automation, Threat Intelligence, Detection Engineering and AI-assisted Pentesting.</p>
 
         <div class="actions">
           <a class="btn" href="Yash_Kanzariya_CV.pdf" download>Download CV</a>
@@ -187,13 +184,13 @@
         </div>
       </aside>
 
-      <footer>Built with ❤️ • Hacker Mode • 2025</footer>
+      <footer>Built with ❤️ • Yash Kanzariya • 2025</footer>
     </main>
   </div>
 
   <!-- Typed.js for role -->
   <script>
-    // init typed.js after intro ends (we call typedInit when ready)
+    // init typed.js after intro ends
     function typedInit(){
       new Typed("#typedRole", {
         strings: ["Cybersecurity Analyst", "Ethical Hacker", "Security Researcher"],
@@ -202,7 +199,7 @@
     }
   </script>
 
-  <!-- Matrix effect + terminal intro + parallax -->
+  <!-- Matrix effect + terminal intro -->
   <script>
   (function(){
     /* ---------- Matrix Rain ---------- */
@@ -245,7 +242,6 @@
     ];
 
     let lineIndex = 0, charIndex = 0;
-    let typing = true;
     let typingSpeed = 28; // ms per char
 
     function typeNext(){
@@ -259,7 +255,6 @@
         charIndex++;
         setTimeout(typeNext, typingSpeed);
       } else {
-        // finished current line, move next after short delay
         charIndex = 0;
         lineIndex++;
         setTimeout(typeNext, 420);
@@ -267,56 +262,16 @@
     }
 
     function closeIntro(){
-      // fade overlay then remove
       overlay.style.transition = "opacity .6s ease, transform .6s ease";
       overlay.style.opacity = "0";
       overlay.style.transform = "translateY(-6px) scale(.995)";
       setTimeout(()=>{ overlay.remove(); typedInit(); }, 650);
     }
 
-    // skip handler
     skip.addEventListener('click', () => { closeIntro(); });
+    document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeIntro(); });
 
-    // Allow ESC to skip
-    document.addEventListener('keydown', (e) => {
-      if(e.key === 'Escape') closeIntro();
-    });
-
-    // start typing after short delay
     setTimeout(typeNext, 300);
-
-    /* ---------- Parallax (mouse) ---------- */
-    const profileWrap = document.getElementById('profileWrap');
-    const profileImg = document.getElementById('profileImg');
-    const heroLeft = document.getElementById('heroLeft');
-    const heroRight = document.getElementById('heroRight');
-    const nameEl = document.getElementById('nameEl');
-
-    // small movement scale
-    const scaleX = 16;
-    const scaleY = 10;
-    function handleMove(e){
-      // compute cursor position relative to center of hero element
-      const rect = document.body.getBoundingClientRect();
-      const cx = window.innerWidth / 2;
-      const cy = window.innerHeight / 2;
-      const dx = (e.clientX - cx) / cx; // -1 .. 1
-      const dy = (e.clientY - cy) / cy;
-      // apply transforms
-      const imgTx = `translate3d(${dx * scaleX}px, ${dy * scaleY}px, 0) rotateX(${dy * 2}deg) rotateY(${dx * -2}deg)`;
-      const wrapTx = `translate3d(${dx * scaleX * 0.45}px, ${dy * scaleY * 0.45}px, 0)`;
-      const nameTx = `translate3d(${dx * -18}px, ${dy * -10}px, 0)`;
-      profileWrap.style.transform = imgTx;
-      profileImg.style.transform = `translateZ(18px) ${imgTx}`;
-      heroLeft.style.transform = wrapTx;
-      nameEl.style.transform = nameTx;
-    }
-    // reduce frequency for performance
-    let last = 0;
-    window.addEventListener('mousemove', (ev)=> {
-      const now = performance.now();
-      if(now - last > 16) { handleMove(ev); last = now; }
-    });
 
   })();
   </script>
