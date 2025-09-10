@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yash Kanzariya | Hacker Portfolio</title>
+  <link rel="icon" type="image/png" href="IMAGES/sailogo.png" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
+
+  <style>
+    /* === Hacker Cyberpunk Theme + Responsive === */
+    :root{
+      --bg: #040405;
+      --green: #00ff9f;
+      --cyan: #00eaff;
+      --pink: #ff00c3;
+      --muted: #8fbfb2;
+      --shadow: 0 0 18px rgba(0,255,159,0.6), 0 0 34px rgba(0,234,255,0.35);
+      --radius: 12px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: "Courier New", ui-monospace, SFMono-Regular, Menlo, monospace;
+      background: var(--bg);
+      color:#cefbe8;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
+    }
+
+    /* Matrix canvas */
+    #matrixCanvas{
+      position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;background:#000;
+    }
+
+    /* Page layout */
+    .wrap{
+      position:relative;z-index:5;min-height:100vh;
+      display:flex;align-items:center;justify-content:center;padding:48px 20px;
+    }
+    .hero{
+      width:100%;max-width:1100px;display:grid;grid-template-columns:1fr 360px;gap:36px;align-items:center;
+      padding:28px;background:linear-gradient(180deg, rgba(5,6,8,0.5), rgba(2,3,4,0.55));
+      border-radius:18px;border:1px solid rgba(0,255,159,0.06);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
+      backdrop-filter: blur(6px);
+    }
+
+    header{
+      position:fixed;top:12px;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:10px 28px;z-index:11;
+    }
+    .logo{color:var(--green);font-weight:700;font-size:16px;text-shadow:var(--shadow)}
+    nav a{color:#cdefe0;text-decoration:none;margin-left:18px;opacity:0.95}
+    nav a:hover{color:var(--cyan);text-shadow:var(--shadow)}
+
+    /* Left column (text) */
+    .hero-left{padding:8px}
+    .greeting{color:var(--muted);font-size:14px;margin-bottom:6px}
+    .name{
+      font-size:44px;line-height:1; margin-bottom:8px;color:var(--cyan);
+      text-shadow: var(--shadow);
+      transform-style:preserve-3d; /* helps parallax */
+    }
+    .role{font-size:20px;color:var(--green);font-weight:700;margin-bottom:12px}
+    .desc{color:#9defdc;max-width:68ch;font-size:15px;margin-bottom:14px}
+
+    .actions{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{
+      padding:10px 16px;border-radius:10px;background:linear-gradient(90deg,var(--green),var(--cyan));
+      color:#021014;font-weight:800;text-decoration:none;box-shadow:var(--shadow);font-size:14px;
+    }
+    .ghost{padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);color:var(--muted);text-decoration:none}
+
+    /* right column (profile) */
+    .hero-right{display:flex;justify-content:center;align-items:center}
+    .profile-wrap{width:300px;height:300px;border-radius:50%;display:grid;place-items:center;
+      background: radial-gradient(circle at 30% 20%, rgba(0,234,255,0.04), transparent 30% );
+      box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 8px 30px rgba(0,255,159,0.06);
+      transform-style:preserve-3d; transition:transform .15s ease-out;
+      border: 2px solid rgba(0,255,159,0.06);
+    }
+    .profile{
+      width:220px;height:220px;border-radius:50%;overflow:hidden;border:3px solid rgba(0,234,255,0.12);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.6), var(--shadow);
+      transition: transform .12s ease-out, filter .12s; transform-style:preserve-3d;
+    }
+    .profile img{width:100%;height:100%;object-fit:cover;display:block}
+
+    /* Projects strip */
+    .projects-row{grid-column:1 / -1;margin-top:18px;display:flex;gap:12px;flex-wrap:wrap}
+    .card{background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.03);padding:12px;border-radius:10px;min-width:220px}
+
+    footer{grid-column:1/-1;margin-top:18px;text-align:center;color:#6f9f93;font-size:13px}
+
+    /* Terminal intro overlay */
+    .terminal-overlay{
+      position:fixed;inset:0;background:#000;z-index:30;display:flex;align-items:center;justify-content:center;
+      padding:20px;flex-direction:column;
+    }
+    .terminal-box{
+      width:min(880px,96%);max-width:920px;background:linear-gradient(180deg,#050505,#00110a);border-radius:10px;
+      border:1px solid rgba(0,255,159,0.06);padding:18px;box-shadow:0 40px 140px rgba(0,0,0,0.8);
+    }
+    .term-lines{color:var(--green);font-size:15px;line-height:1.6;min-height:120px;white-space:pre-wrap;font-family:monospace}
+    .term-skip{margin-top:12px;color:var(--muted);font-size:13px;cursor:pointer;text-decoration:underline;align-self:flex-end}
+
+    /* small screens */
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr;gap:18px;padding:20px}
+      .hero-right{order:-1;justify-content:center}
+      .profile-wrap{width:220px;height:220px}
+      .name{font-size:32px}
+    }
+    @media (max-width:480px){
+      .name{font-size:26px}
+      .role{font-size:16px}
+      .profile-wrap{width:180px;height:180px}
+      .profile{width:150px;height:150px}
+    }
+
+    /* tiny glitch slice for name */
+    .glitch{
+      position:relative;display:inline-block;
+    }
+    .glitch::before, .glitch::after{
+      content: attr(data-text);
+      position:absolute;left:0;top:0;mix-blend-mode:screen;opacity:0.8;
+    }
+    .glitch::before{transform: translate(-2px,-1px);color:var(--pink);clip-path: inset(0 0 65% 0)}
+    .glitch::after{transform: translate(2px,1px);color:var(--cyan);clip-path: inset(65% 0 0 0)}
+  </style>
+</head>
+<body>
+
+  <!-- Matrix background -->
+  <canvas id="matrixCanvas"></canvas>
+
+  <!-- Terminal intro overlay -->
+  <div class="terminal-overlay" id="terminalOverlay" role="dialog" aria-modal="true" aria-label="Intro terminal">
+    <div class="terminal-box" role="document">
+      <div class="term-lines" id="termLines"></div>
+      <div class="term-skip" id="termSkip">Skip intro</div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">[ Yash::Portfolio ]</div>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Main wrap -->
+  <div class="wrap">
+    <main class="hero" id="home">
+      <!-- left -->
+      <div class="hero-left" id="heroLeft">
+        <div class="greeting">Hello, I am</div>
+        <div class="name glitch" id="nameEl" data-text="Yash Kanzariya">Yash Kanzariya</div>
+        <div class="role">And I'm a <span id="typedRole" class="role-text"></span></div>
+        <p class="desc">Cybersecurity Analyst · Ethical Hacker · Security Researcher. Focused on SOC automation, Threat Intelligence, cloud hardening and AI-assisted pentesting.</p>
+
+        <div class="actions">
+          <a class="btn" href="Yash_Kanzariya_CV.pdf" download>Download CV</a>
+          <a class="ghost" href="https://github.com/Imyash27" target="_blank" rel="noopener">View GitHub</a>
+        </div>
+
+        <div class="projects-row" aria-hidden="true" style="margin-top:18px">
+          <div class="card"><strong>SOC-Automation</strong><div style="color:var(--muted);font-size:13px">Wazuh playbooks & detection rules</div></div>
+          <div class="card"><strong>MISP-Docker</strong><div style="color:var(--muted);font-size:13px">Dockerized MISP with ingest scripts</div></div>
+          <div class="card"><strong>Auto-Pentest-RL</strong><div style="color:var(--muted);font-size:13px">RL for automated recon & scanning</div></div>
+        </div>
+
+      </div>
+
+      <!-- right -->
+      <aside class="hero-right" id="heroRight">
+        <div class="profile-wrap" id="profileWrap">
+          <div class="profile" id="profileImg">
+            <img src="IMAGES/saianon.png" alt="Yash Kanzariya profile">
+          </div>
+        </div>
+      </aside>
+
+      <footer>Built with ❤️ • Hacker Mode • 2025</footer>
+    </main>
+  </div>
+
+  <!-- Typed.js for role -->
+  <script>
+    // init typed.js after intro ends (we call typedInit when ready)
+    function typedInit(){
+      new Typed("#typedRole", {
+        strings: ["Cybersecurity Analyst", "Ethical Hacker", "Security Researcher"],
+        typeSpeed: 60, backSpeed: 40, backDelay: 1100, loop: true
+      });
+    }
+  </script>
+
+  <!-- Matrix effect + terminal intro + parallax -->
+  <script>
+  (function(){
+    /* ---------- Matrix Rain ---------- */
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+    function resizeCanvas(){ canvas.width = innerWidth; canvas.height = innerHeight; cols = Math.floor(canvas.width / fontSize); drops.length = cols; }
+    let fontSize = 14;
+    let cols = Math.floor(window.innerWidth / fontSize);
+    let drops = Array(cols).fill(1);
+    function drawMatrix(){
+      ctx.fillStyle = "rgba(0,0,0,0.12)";
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = "#00ff9f";
+      ctx.font = fontSize + "px monospace";
+      for(let i=0;i<drops.length;i++){
+        const text = Math.random() > 0.5 ? '1' : '0';
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+    let matrixInterval = setInterval(drawMatrix, 35);
+    window.addEventListener('resize', () => { fontSize = 14; resizeCanvas(); });
+
+    resizeCanvas();
+
+    /* ---------- Terminal Intro (typewriter) ---------- */
+    const overlay = document.getElementById('terminalOverlay');
+    const linesEl = document.getElementById('termLines');
+    const skip = document.getElementById('termSkip');
+
+    const introLines = [
+      "Initializing secure session...",
+      "Loading threat-intel modules: [OK]",
+      "Mounting Wazuh connectors: [OK]",
+      "Starting MISP ingestion: [OK]",
+      "Calibrating RL pentest agent: [OK]",
+      "Welcome — Yash Kanzariya. Access granted.",
+      ""
+    ];
+
+    let lineIndex = 0, charIndex = 0;
+    let typing = true;
+    let typingSpeed = 28; // ms per char
+
+    function typeNext(){
+      if(lineIndex >= introLines.length){
+        closeIntro();
+        return;
+      }
+      const current = introLines[lineIndex];
+      if(charIndex <= current.length){
+        linesEl.innerText = introLines.slice(0, lineIndex).join('\n') + (lineIndex ? '\n' : '') + current.slice(0, charIndex) + '_';
+        charIndex++;
+        setTimeout(typeNext, typingSpeed);
+      } else {
+        // finished current line, move next after short delay
+        charIndex = 0;
+        lineIndex++;
+        setTimeout(typeNext, 420);
+      }
+    }
+
+    function closeIntro(){
+      // fade overlay then remove
+      overlay.style.transition = "opacity .6s ease, transform .6s ease";
+      overlay.style.opacity = "0";
+      overlay.style.transform = "translateY(-6px) scale(.995)";
+      setTimeout(()=>{ overlay.remove(); typedInit(); }, 650);
+    }
+
+    // skip handler
+    skip.addEventListener('click', () => { closeIntro(); });
+
+    // Allow ESC to skip
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape') closeIntro();
+    });
+
+    // start typing after short delay
+    setTimeout(typeNext, 300);
+
+    /* ---------- Parallax (mouse) ---------- */
+    const profileWrap = document.getElementById('profileWrap');
+    const profileImg = document.getElementById('profileImg');
+    const heroLeft = document.getElementById('heroLeft');
+    const heroRight = document.getElementById('heroRight');
+    const nameEl = document.getElementById('nameEl');
+
+    // small movement scale
+    const scaleX = 16;
+    const scaleY = 10;
+    function handleMove(e){
+      // compute cursor position relative to center of hero element
+      const rect = document.body.getBoundingClientRect();
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      const dx = (e.clientX - cx) / cx; // -1 .. 1
+      const dy = (e.clientY - cy) / cy;
+      // apply transforms
+      const imgTx = `translate3d(${dx * scaleX}px, ${dy * scaleY}px, 0) rotateX(${dy * 2}deg) rotateY(${dx * -2}deg)`;
+      const wrapTx = `translate3d(${dx * scaleX * 0.45}px, ${dy * scaleY * 0.45}px, 0)`;
+      const nameTx = `translate3d(${dx * -18}px, ${dy * -10}px, 0)`;
+      profileWrap.style.transform = imgTx;
+      profileImg.style.transform = `translateZ(18px) ${imgTx}`;
+      heroLeft.style.transform = wrapTx;
+      nameEl.style.transform = nameTx;
+    }
+    // reduce frequency for performance
+    let last = 0;
+    window.addEventListener('mousemove', (ev)=> {
+      const now = performance.now();
+      if(now - last > 16) { handleMove(ev); last = now; }
+    });
+
+  })();
+  </script>
+
+</body>
+</html>
