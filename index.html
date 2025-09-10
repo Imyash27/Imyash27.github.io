@@ -167,13 +167,17 @@
           <a class="ghost" href="https://github.com/Imyash27" target="_blank" rel="noopener">View GitHub</a>
         </div>
 
+      <!--  
+        
         <div class="projects-row" aria-hidden="true" style="margin-top:18px">
           <div class="card"><strong>SOC-Automation</strong><div style="color:var(--muted);font-size:13px">Wazuh playbooks & detection rules</div></div>
           <div class="card"><strong>MISP-Docker</strong><div style="color:var(--muted);font-size:13px">Dockerized MISP with ingest scripts</div></div>
           <div class="card"><strong>Auto-Pentest-RL</strong><div style="color:var(--muted);font-size:13px">RL for automated recon & scanning</div></div>
         </div>
 
-      </div>
+      </div> 
+        
+        -->
 
       <!-- right -->
       <aside class="hero-right" id="heroRight">
@@ -193,7 +197,7 @@
     // init typed.js after intro ends
     function typedInit(){
       new Typed("#typedRole", {
-        strings: ["Cybersecurity Analyst", "Ethical Hacker", "Security Researcher"],
+        strings: ["Ethical Hacker", "Security Researcher"],
         typeSpeed: 60, backSpeed: 40, backDelay: 1100, loop: true
       });
     }
@@ -232,13 +236,13 @@
     const skip = document.getElementById('termSkip');
 
     const introLines = [
-      "Initializing secure session...",
-      "Loading threat-intel modules: [OK]",
-      "Mounting Wazuh connectors: [OK]",
-      "Starting MISP ingestion: [OK]",
-      "Calibrating RL pentest agent: [OK]",
-      "Welcome — Yash Kanzariya. Access granted.",
-      ""
+  "[00:00:01] > Booting secure kernel modules...",
+  "[00:00:02] > Initializing deep-scan engine ... [OK]",
+  "[00:00:03] > Loading Threat-Intel Feeds ...... [OK]",
+  "[00:00:04] > Establishing Encrypted Channel .. [OK]",
+  "[00:00:05] > Verifying User Identity: Yash Kanzariya",
+  "[00:00:06] > Access Granted ✔",
+  "Welcome to Yash's Cybersecurity Portfolio Terminal."
     ];
 
     let lineIndex = 0, charIndex = 0;
